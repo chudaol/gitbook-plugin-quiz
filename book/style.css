@@ -1,0 +1,45 @@
+.quiz {
+  border-left: 2px solid;
+  padding-left: 10px;
+  margin-bottom: 20px;
+}
+.quiz-name {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+.quiz-question {
+  border-bottom: 2px solid;
+  padding-bottom: 15px;
+}
+.quiz-question-text {
+  font-weight: bold;
+}
+.quiz-question-explanation {
+  margin-top: 5px;
+  font-size: 0.5em;
+}
+.quiz-question-message {
+  font-size: small;
+}
+.quiz-question-check {
+  margin-top: 5px;
+}
+.quiz-answer input {
+  margin-right: 10px;
+}
+.hidden {
+  display: none;
+}
+.correct {
+  color: green;
+}
+.incorrect {
+  color: red;
+}
+.correct:before {
+  content: " \2714"
+}
+.incorrect:before {
+  content: " \2718"
+}

@@ -1,0 +1,24 @@
+{
+  "name": "gitbook-plugin-quiz",
+  "version": "0.0.1",
+  "description": "Allows to insert simple quizes into gitbook",
+  "keywords": [
+    "quiz",
+    "gitbook"
+  ],
+  "author": {
+    "name": "Olga Filipova",
+    "email": "chudaol@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chudaol/gitbook-plugin-quiz"
+  },
+  "engines": {
+    "gitbook": ">1.x.x"
+  },
+  "dependencies": {
+    "jquery": "^2.1.4",
+    "underscore": "^1.8.3"
+  }
+}
