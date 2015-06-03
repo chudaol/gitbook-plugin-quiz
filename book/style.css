@@ -20,7 +20,7 @@
   font-size: 0.5em;
 }
 .quiz-question-message {
-  font-size: small;
+  font-size: 0.8em;
 }
 .quiz-question-check {
   margin-top: 5px;
@@ -34,7 +34,7 @@
 .correct {
   color: green;
 }
-.incorrect {
+.incorrect, .error {
   color: red;
 }
 .correct:before {
@@ -42,4 +42,12 @@
 }
 .incorrect:before {
   content: " \2718"
+}
+.quiz .buttons .btn {
+  border: 1px solid;
+  border-radius: 2px;
+  padding: 0 2px 0 2px;
+  font-size: 0.9em;
+  margin-right: 3px;
+  cursor: pointer;
 }

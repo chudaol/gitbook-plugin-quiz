@@ -1,7 +1,33 @@
 require(["jquery", "gitbook"], function($, gitbook) {
-  var configuration = {"labels": {}, text: {}};
+  var configuration = {"labels": {}, text: {}, "buttons": {"showCorrect": true, "showExplanation": true}};
   var isStarted = false;
-
+  /**
+   * Enumeration for default labels and text
+   * @type {Object}
+   */
+  var LABELS_AND_TEXT_ENUM = {
+    "labels": {
+      "showCorrect"       : "Show correct answers",
+      "check"             : "Check",
+      "showExplanation"   : "Show explanation"
+    },
+    "text": {
+      "noChosen"    : "No answer is chosen",
+      "incomplete"  : "Some correct answers missing",
+      "rightAnswer" : "Right answer!",
+      "wrongAnswer" : "Wrong answer!"
+    }
+  };
+  /**
+   * ENumeration for button actions
+   *
+   * @type {{CHECK: string, EXPLAIN: string, SHOW: string}}
+   */
+  var BUTTON_ACTIONS_ENUM = {
+    CHECK   : "check",
+    EXPLAIN : "explain",
+    SHOW    : "show"
+  };
   /**
    * Generates random string of given length
    *
@@ -23,28 +49,13 @@ require(["jquery", "gitbook"], function($, gitbook) {
   }
 
   /**
-   * Enumeration for default labels and text
-   * @type {Object}
-   */
-  var LABELS_AND_TEXT_ENUM = {
-    "labels": {
-      "showCorrect" : "Show correct answers",
-      "check"       : "Check"
-    },
-    "text": {
-      "noChosen"    : "No answer is chosen",
-      "rightAnswer" : "Right answer!",
-      "wrongAnswer" : "Wrong answer!"
-    }
-  };
-  /**
    * Template for the whole question
    *
    * @param {jQuery} $el
    * @returns {String}
    */
   var questionTemplate = function ($el) {
-    var html, question, multiple, $answers, $explanation, name;
+    var html, question, multiple, $answers, $explanation, name, withExplanation;
 
     html = "";
 
@@ -63,19 +74,41 @@ require(["jquery", "gitbook"], function($, gitbook) {
       $answer = $(this);
       html += answerTemplate($answer, multiple, name);
     });
-    html += explanationTemplate($explanation.length > 0 ? $explanation.text() : "");
+    withExplanation = $explanation.length > 0;
+    html += explanationTemplate(withExplanation ? $explanation.text() : "");
     html += messageTemplate();
-    html += checkButtonTemplate();
+    html += checkButtonTemplate(withExplanation);
     html += "</div>";
     return html;
   };
   /**
    * Generates html string for the check button
    *
+   * @param {Boolean} withExplanation
    * @returns {String}
    */
-  var checkButtonTemplate = function () {
-    return "<button class=\"quiz-question-check\">" + configuration.labels.check + "</button>";
+  var checkButtonTemplate = function (withExplanation) {
+    var checkButton, showExplanationButton, showCorrectAnswers, html;
+
+    html = "";
+
+    checkButton = "<span class=\"btn show-label quiz-question-check\" data-action=\"check\">"   +
+    configuration.labels.check                                                  +
+    "</span>";
+    showExplanationButton =  "<span class=\"btn show-label quiz-question-show-explanation\" data-action=\"explain\">" +
+    configuration.labels.showExplanation                                                              +
+    "</span>";
+    showCorrectAnswers =  "<span class=\"btn show-label quiz-question-show-correct\" data-action=\"show\">" +
+    configuration.labels.showCorrect                                                +
+    "</span>";
+
+    html += "<div class=\"buttons\">"                                                         +
+    checkButton                                                                               +
+    (configuration.buttons.showExplanation && withExplanation ? showExplanationButton : "")   +
+    (configuration.buttons.showCorrect ? showCorrectAnswers : "")                             +
+    "</div>";
+
+    return html;
 
   };
   /**
@@ -119,17 +152,6 @@ require(["jquery", "gitbook"], function($, gitbook) {
     return "<div class=\"quiz-question-message hidden\"></div>";
   };
   /**
-   * Action to take when no answer is checked in the question
-   *
-   * @param {jQuery} $question
-   */
-  var noAnswerChecked = function ($question) {
-    var $message;
-
-    $message = $question.find(".quiz-question-message");
-    $message.show().text(configuration.text.noChosen);
-  };
-  /**
    * Analyzes answers to questions and takes action
    *
    * @param {jQuery} $question the question element to analyze
@@ -151,15 +173,21 @@ require(["jquery", "gitbook"], function($, gitbook) {
     }
     //mark answers
     markAnswersAsCorrectOrIncorrect($correctChecked, $incorrectChecked);
-    //if incorrect
-    if ($correctChecked.length < numberOfCorrect || $incorrectChecked.length > 0) {
-      handleIncorrect($question);
+    //if incomplete
+    if ($correctChecked.length < numberOfCorrect && $incorrectChecked.length === 0) {
+      handleIncomplete($question);
       return;
     }
     //if correct
     if ($correctChecked.length === numberOfCorrect && $incorrectChecked.length === 0) {
-      handleCorrect($question);
+      showExplanation($question);
+      return;
     }
+    ////if there are incorrect
+    //if ($incorrectChecked.length > 0) {
+    //  handleIncorrect($question);
+    //  return;
+    //}
   };
   /**
    * Handles correct state of the question
@@ -186,18 +214,42 @@ require(["jquery", "gitbook"], function($, gitbook) {
     $message.text(configuration.text.wrongAnswer).removeClass("hidden");
   };
   /**
+   * Handles incorrect state of the question
+   *
+   * @param {jQuery} $question
+   */
+  var handleIncomplete = function ($question) {
+    var $message;
+
+    $message = getMessageElement($question);
+    $message.text(configuration.text.incomplete).removeClass("hidden").addClass("error");
+  };
+  /**
+   * Action to take when no answer is checked in the question
+   *
+   * @param {jQuery} $question
+   */
+  var noAnswerChecked = function ($question) {
+    var $message;
+
+    $message = $question.find(".quiz-question-message");
+    $message.show().text(configuration.text.noChosen).addClass("error");
+  };
+  /**
    * Marks answers with corresponding classes
    *
    * @param {jQuery} $correctChecked
-   * @param {jQuery} $incorrectChecked
+   * @param {jQuery} [$incorrectChecked]
    */
   var markAnswersAsCorrectOrIncorrect = function ($correctChecked, $incorrectChecked) {
     $correctChecked.each(function () {
       $(this).parent().find(".quiz-answer-check").addClass("correct");
     });
-    $incorrectChecked.each(function () {
-      $(this).parent().find(".quiz-answer-check").addClass("incorrect");
-    });
+    if ($incorrectChecked) {
+      $incorrectChecked.each(function () {
+        $(this).parent().find(".quiz-answer-check").addClass("incorrect");
+      });
+    }
   };
   /**
    * Returns all answers elements of the question
@@ -238,20 +290,68 @@ require(["jquery", "gitbook"], function($, gitbook) {
     $message = getMessageElement($question);
     $explanation = getExplanationElement($question);
     $answers.each(function () {
-      $(this).find(".quiz-answer-check").removeClass("correct").removeClass("incorrect")
+      $(this).find(".quiz-answer-check").removeClass("correct").removeClass("incorrect");
     });
     $message.text("").addClass("hidden");
     $explanation.addClass("hidden");
   };
   /**
-   * Handles check button click
+   * Handles click on all buttons
+   * @param {Event} ev
    */
-  var onClickCheckButton = function (ev) {
-    var $target, $question, numberOfCorrect, totalNumberOfAnswers, $incorrectChecked, $correctChecked;
+  var onClickButton = function (ev) {
+    var $target, $question, action;
 
+    ev.preventDefault();
+    ev.stopPropagation();
     $target = $(ev.currentTarget);
     $question = $target.closest(".quiz-question");
-    clearQuestionState($question);
+    action = $target.data("action");
+
+    switch (action) {
+      case BUTTON_ACTIONS_ENUM.CHECK:
+        clearQuestionState($question);
+        checkAnswers($question);
+        break;
+      case BUTTON_ACTIONS_ENUM.EXPLAIN:
+        showExplanation($question);
+        break;
+      case BUTTON_ACTIONS_ENUM.SHOW:
+        clearQuestionState($question);
+        showCorrect($question);
+        break;
+      default:
+        checkAnswers($question);
+    }
+  };
+  /**
+   * Shows an explanation
+   *
+   * @param {jQuery} $question
+   */
+  var showExplanation = function ($question) {
+    var $explanation;
+
+    $explanation = getExplanationElement($question);
+    $explanation.removeClass("hidden");
+  };
+  /**
+   * Shows correct answers
+   *
+   * @param {jQuery} $question
+   */
+  var showCorrect = function ($question) {
+    var $correct;
+
+    $correct = $question.find(".quiz-answer input[data-correct=true]");
+    $correct.prop("checked", true);
+    markAnswersAsCorrectOrIncorrect($correct);
+  };
+  /**
+   * Handles check button click
+   */
+  var checkAnswers = function ($question) {
+    var numberOfCorrect, totalNumberOfAnswers, $incorrectChecked, $correctChecked;
 
     numberOfCorrect = $question.find(".quiz-answer input[data-correct=true]").length;
     totalNumberOfAnswers = $question.find(".quiz-answer").length;
@@ -285,7 +385,7 @@ require(["jquery", "gitbook"], function($, gitbook) {
     $quiz.html(html);
     $quiz.data("prepared", true);
     // Assign events
-    $quiz.find(".quiz-question-check").click(onClickCheckButton);
+    $quiz.find(".buttons .btn").click(onClickButton);
   };
   /**
    * Starting point
@@ -299,12 +399,12 @@ require(["jquery", "gitbook"], function($, gitbook) {
     });
   };
 
-  configuration = $.extend(true, {}, LABELS_AND_TEXT_ENUM, {});
+  configuration = $.extend(true, configuration, LABELS_AND_TEXT_ENUM, {});
 
   gitbook.events.bind("start", function (e, config) {
     isStarted = true;
     config = config.quiz || {};
-    configuration = $.extend(true, {}, LABELS_AND_TEXT_ENUM, config);
+    configuration = $.extend(true, configuration, LABELS_AND_TEXT_ENUM, config);
     init();
   });
 
