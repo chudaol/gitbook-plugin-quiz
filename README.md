@@ -19,13 +19,17 @@ It is possible to configure generic labels and text:
 "pluginsConfig": {
     "quiz": {
         "labels": {
-            "showCorrect" : "",         // default is "Show correct answers"
-            "check"       : ""          // default is "Check"
+            "showCorrect"       : "",   // default is "Show correct answers"
+            "check"             : "",   // default is "Check"
+            "showExplanation"   : ""    // default is "Show explanation"
         },
         "text": {
             "noChosen"    : "",         // default is "No answer is chosen"
-            "rightAnswer" : "",         // default is "Right answer!"
-            "wrongAnswer" : ""          // default is "Wrong answer!"
+            "incomplete"  : ""          // default is "Some correct answers missing"
+        },
+        "buttons": {
+            "showCorrect"       : true, // set to false to disable "show correct answers" button
+            "showExplanation"   : true  // set to false to disable "show explanation" button
         }
     }
 }
