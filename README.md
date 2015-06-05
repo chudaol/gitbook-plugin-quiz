@@ -21,7 +21,8 @@ It is possible to configure generic labels and text:
         "labels": {
             "showCorrect"       : "",   // default is "Show correct answers"
             "check"             : "",   // default is "Check"
-            "showExplanation"   : ""    // default is "Show explanation"
+            "showExplanation"   : "",   // default is "Show explanation",
+            "explanationHeader" : "Explanation" // default is ""
         },
         "text": {
             "noChosen"    : "",         // default is "No answer is chosen"

@@ -9,7 +9,8 @@ require(["jquery", "gitbook"], function($, gitbook) {
     "labels": {
       "showCorrect"       : "Show correct answers",
       "check"             : "Check",
-      "showExplanation"   : "Show explanation"
+      "showExplanation"   : "Show explanation",
+      "explanationHeader" : ""
     },
     "text": {
       "noChosen"    : "No answer is chosen",
@@ -109,7 +110,6 @@ require(["jquery", "gitbook"], function($, gitbook) {
     "</div>";
 
     return html;
-
   };
   /**
    * Generates html string for the answer
@@ -128,14 +128,14 @@ require(["jquery", "gitbook"], function($, gitbook) {
 
     if (multiple) {
       return "<div class=\"quiz-answer\">" +
-          "<input data-correct=" + correct + " name=\"" + name + "\" type=\"checkbox\" value=\"" + text + "\">" + html +
-          "<span class=\"quiz-answer-check\"></span>" +
-          "</div>";
+        "<input data-correct=" + correct + " name=\"" + name + "\" type=\"checkbox\" value=\"" + text + "\">" + html +
+        "<span class=\"quiz-answer-check\"></span>" +
+        "</div>";
     } else {
       return "<div class=\"quiz-answer\">" +
-          "<input data-correct=" + correct + " name=\"" + name + "\" type=\"radio\" value=\"" + text + "\">" + html +
-          "<span class=\"quiz-answer-check\"></span>" +
-          "</div>";
+        "<input data-correct=" + correct + " name=\"" + name + "\" type=\"radio\" value=\"" + text + "\">" + html +
+        "<span class=\"quiz-answer-check\"></span>" +
+        "</div>";
     }
   };
   /**
@@ -143,7 +143,11 @@ require(["jquery", "gitbook"], function($, gitbook) {
    * @param text
    */
   var explanationTemplate = function (text) {
-    return "<div class=\"quiz-question-explanation hidden\">" + text + "</div>";
+    return "<div class=\"quiz-question-explanation hidden\">" +
+      (configuration.labels.explanationHeader && configuration.labels.explanationHeader.length > 0 ?
+      "<div class=\"quiz-question-explanation-header\">" + configuration.labels.explanationHeader + "</div>" : "")    +
+      text +
+      "</div>";
   };
   /**
    * Generates html string for the message for the answer
