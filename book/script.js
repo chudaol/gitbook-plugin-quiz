@@ -75,8 +75,8 @@ require(["jquery", "gitbook"], function($, gitbook) {
       $answer = $(this);
       html += answerTemplate($answer, multiple, name);
     });
-    withExplanation = $explanation.length > 0;
-    html += explanationTemplate(withExplanation ? $explanation.text() : "");
+    withExplanation = $explanation.length > 0 && configuration.buttons.showExplanation === true;
+    html += withExplanation ? explanationTemplate($explanation.text()) : "";
     html += messageTemplate();
     html += checkButtonTemplate(withExplanation);
     html += "</div>";
@@ -140,7 +140,8 @@ require(["jquery", "gitbook"], function($, gitbook) {
   };
   /**
    * Generates html string for the message for explanation
-   * @param text
+   *
+   * @param {String} text
    */
   var explanationTemplate = function (text) {
     return "<div class=\"quiz-question-explanation hidden\">" +
