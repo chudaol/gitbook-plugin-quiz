@@ -76,7 +76,7 @@ require(["jquery", "gitbook"], function($, gitbook) {
       html += answerTemplate($answer, multiple, name);
     });
     withExplanation = $explanation.length > 0 && configuration.buttons.showExplanation === true;
-    html += withExplanation ? explanationTemplate($explanation.text()) : "";
+    html += withExplanation ? explanationTemplate($explanation.html()) : "";
     html += messageTemplate();
     html += checkButtonTemplate(withExplanation);
     html += "</div>";
