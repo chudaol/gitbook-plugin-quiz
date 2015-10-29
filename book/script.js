@@ -1,4 +1,4 @@
-require(["jquery", "gitbook"], function($, gitbook) {
+require(["jquery", "underscore", "gitbook"], function($, _, gitbook) {
   var configuration = {"labels": {}, text: {}, "buttons": {"showCorrect": true, "showExplanation": true}};
   var isStarted = false;
   /**
