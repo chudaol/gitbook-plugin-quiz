@@ -3,9 +3,6 @@ Allows to insert simple quizes into gitbook.
 
 ![Link](screenshot.png)
 
-
-![Link](screenshot2.png)
-
 ### How to use?
 
 Add plugin to your `book.json`, then run `gitbook install`:
