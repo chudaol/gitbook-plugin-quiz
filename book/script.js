@@ -120,13 +120,23 @@ require(["jquery", "lodash", "gitbook"], function($, _, gitbook) {
    * @returns {String}
    */
   var answerTemplate = function ($el, multiple, name) {
-    var correct, text, html;
+    var correct, text, html, $options;
 
     correct = _.isString($el.attr("correct"));
     text = $el.text();
     html = $el.html();
+    $options = $el.find("option");
+    if ($options.length > 0) {
+      var result;
 
-    if (multiple) {
+      result = "<div class=\"quiz-answer\"><select>";
+      _.each($options, function (option) {
+        var $option = $(option);
+        result += "<option data-correct=" + _.isString($option.attr("correct")) + ">" + $option.text() + "</option>";
+      });
+      result += "</select>" + "<span class=\"quiz-answer-check\"></span></div>";
+      return result;
+    } else if (multiple) {
       return "<div class=\"quiz-answer\">" +
         "<input data-correct=" + correct + " name=\"" + name + "\" type=\"checkbox\" value=\"" + text + "\">" + html +
         "<span class=\"quiz-answer-check\"></span>" +
@@ -188,11 +198,6 @@ require(["jquery", "lodash", "gitbook"], function($, _, gitbook) {
       showExplanation($question);
       return;
     }
-    ////if there are incorrect
-    //if ($incorrectChecked.length > 0) {
-    //  handleIncorrect($question);
-    //  return;
-    //}
   };
   /**
    * Handles correct state of the question
@@ -248,11 +253,11 @@ require(["jquery", "lodash", "gitbook"], function($, _, gitbook) {
    */
   var markAnswersAsCorrectOrIncorrect = function ($correctChecked, $incorrectChecked) {
     $correctChecked.each(function () {
-      $(this).parent().find(".quiz-answer-check").addClass("correct");
+      $(this).closest(".quiz-answer").find(".quiz-answer-check").addClass("correct");
     });
     if ($incorrectChecked) {
       $incorrectChecked.each(function () {
-        $(this).parent().find(".quiz-answer-check").addClass("incorrect");
+        $(this).closest(".quiz-answer").find(".quiz-answer-check").addClass("incorrect");
       });
     }
   };
@@ -349,7 +354,10 @@ require(["jquery", "lodash", "gitbook"], function($, _, gitbook) {
     var $correct;
 
     $correct = $question.find(".quiz-answer input[data-correct=true]");
-    $correct.prop("checked", true);
+    if ($correct.length === 0) {
+      $correct = $question.find(".quiz-answer option[data-correct=true]");
+    }
+    $correct.prop("checked", true).prop("selected", true);
     markAnswersAsCorrectOrIncorrect($correct);
   };
   /**
@@ -361,7 +369,13 @@ require(["jquery", "lodash", "gitbook"], function($, _, gitbook) {
     numberOfCorrect = $question.find(".quiz-answer input[data-correct=true]").length;
     totalNumberOfAnswers = $question.find(".quiz-answer").length;
     $correctChecked = $question.find(".quiz-answer input[data-correct=true]:checked");
+    if ($correctChecked.length === 0) {
+      $correctChecked = $question.find(".quiz-answer select option[data-correct=true]:selected");
+    }
     $incorrectChecked = $question.find(".quiz-answer input[data-correct=false]:checked");
+    if ($incorrectChecked.length === 0) {
+      $incorrectChecked = $question.find(".quiz-answer select option[data-correct=false]:selected");
+    }
 
     analyseAnswers($question, numberOfCorrect, totalNumberOfAnswers, $correctChecked, $incorrectChecked);
   };
