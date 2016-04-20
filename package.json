@@ -1,6 +1,6 @@
 {
   "name": "gitbook-plugin-quiz",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Allows to insert simple quizes into gitbook",
   "keywords": [
     "quiz",
