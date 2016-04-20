@@ -1,4 +1,4 @@
-require(["jquery", "lodash", "gitbook"], function($, _, gitbook) {
+require(["jquery", "gitbook"], function($, gitbook) {
   var configuration = {"labels": {}, text: {}, "buttons": {"showCorrect": true, "showExplanation": true}};
   var isStarted = false;
   /**
@@ -48,6 +48,16 @@ require(["jquery", "lodash", "gitbook"], function($, _, gitbook) {
     }
     return result;
   }
+  /**
+   * Asserts value is a String object
+   *
+   * @param {String} [value]
+   * @returns {Bool}
+   */
+   function isString(value) {
+    return typeof value == 'string' ||
+        (!$.isArray(value) && (!!value && typeof value == 'object') && Object.prototype.toString.call(value) == '[object String]');
+   }
 
   /**
    * Template for the whole question
@@ -61,7 +71,7 @@ require(["jquery", "lodash", "gitbook"], function($, _, gitbook) {
     html = "";
 
     question = $el.find("p").first().html();
-    multiple = _.isString($el.attr("multiple"));
+    multiple = isString($el.attr("multiple"));
     $answers = $el.find("answer");
     $explanation = $el.find("explanation");
 
@@ -122,7 +132,7 @@ require(["jquery", "lodash", "gitbook"], function($, _, gitbook) {
   var answerTemplate = function ($el, multiple, name) {
     var correct, text, html, $options;
 
-    correct = _.isString($el.attr("correct"));
+    correct = isString($el.attr("correct"));
     text = $el.text();
     html = $el.html();
     $options = $el.find("option");
@@ -130,9 +140,9 @@ require(["jquery", "lodash", "gitbook"], function($, _, gitbook) {
       var result;
 
       result = "<div class=\"quiz-answer\"><select>";
-      _.each($options, function (option) {
+      $.each($options, function (i, option) {
         var $option = $(option);
-        result += "<option data-correct=" + _.isString($option.attr("correct")) + ">" + $option.text() + "</option>";
+        result += "<option data-correct=" + isString($option.attr("correct")) + ">" + $option.text() + "</option>";
       });
       result += "</select>" + "<span class=\"quiz-answer-check\"></span></div>";
       return result;
