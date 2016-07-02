@@ -9,7 +9,7 @@ Add plugin to your `book.json`, then run `gitbook install`:
 
 ```
 {
-    plugins: ["quiz"]
+    "plugins": ["quiz"]
 }
 ```
 
