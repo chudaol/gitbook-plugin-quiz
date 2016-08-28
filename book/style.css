@@ -45,6 +45,9 @@
 .quiz-answer input {
   margin-right: 10px;
 }
+.quiz-answer label {
+  font-weight: normal;
+}
 /* EXPLANATION */
 .quiz-question-explanation {
   font-size: 1.6rem;

@@ -148,14 +148,14 @@ require(["jquery", "gitbook"], function($, gitbook) {
       return result;
     } else if (multiple) {
       return "<div class=\"quiz-answer\">" +
-        "<input data-correct=" + correct + " name=\"" + name + "\" type=\"checkbox\" value=\"" + text + "\">" + html +
+        "<label><input data-correct=" + correct + " name=\"" + name + "\" type=\"checkbox\" value=\"" + text + "\">" + html +
         "<span class=\"quiz-answer-check\"></span>" +
-        "</div>";
+        "</label></div>";
     } else {
       return "<div class=\"quiz-answer\">" +
-        "<input data-correct=" + correct + " name=\"" + name + "\" type=\"radio\" value=\"" + text + "\">" + html +
+        "<label><input data-correct=" + correct + " name=\"" + name + "\" type=\"radio\" value=\"" + text + "\">" + html +
         "<span class=\"quiz-answer-check\"></span>" +
-        "</div>";
+        "</label></div>";
     }
   };
   /**
