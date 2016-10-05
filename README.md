@@ -1,5 +1,5 @@
 # gitbook-plugin-quiz
-<a href="https://www.npmjs.com/package/gitbook-plugin-addcssjs"><img src="https://img.shields.io/npm/dt/gitbook-plugin-quiz.svg" alt="Downloads"></a>
+<a href="https://www.npmjs.com/package/gitbook-plugin-quiz"><img src="https://img.shields.io/npm/dt/gitbook-plugin-quiz.svg" alt="Downloads"></a>
 Allows to insert simple quizes into gitbook.
 
 ![Link](screenshot.png)
